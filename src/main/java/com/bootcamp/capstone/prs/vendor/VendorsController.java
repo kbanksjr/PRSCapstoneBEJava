@@ -36,7 +36,7 @@ public class VendorsController {
 	}
 	
 	@SuppressWarnings("rawtypes")
-	@PutMapping("{vendorId")
+	@PutMapping("{vendorId}")
 	public ResponseEntity putVendor(@PathVariable int vendorId, @RequestBody Vendor vendor) {
 		if(vendorId != vendor.getId() || vendor.getId() == 0)
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

@@ -38,7 +38,7 @@ public class ProductsController {
 	}
 	
 	@SuppressWarnings("rawtypes")
-	@PutMapping("{id")
+	@PutMapping("{id}")
 	public ResponseEntity putProduct(@PathVariable int id, @RequestBody Product product) {
 		if(product == null || product.getId() == 0) {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
