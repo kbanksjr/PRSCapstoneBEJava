@@ -30,8 +30,9 @@ public class UsersController {
 	@GetMapping("{username}/{password}")
 	public ResponseEntity<User> loginUser(@PathVariable String username, @PathVariable String password) {
 		var user = userRepo.findByUsernameAndPassword(username, password);
-		if(user.isEmpty())
+		if(user.isEmpty()) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
 		return new ResponseEntity<User>(user.get(), HttpStatus.OK);
 	}
 	

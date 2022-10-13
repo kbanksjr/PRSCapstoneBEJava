@@ -78,9 +78,9 @@ public class RequestsController {
 	@SuppressWarnings("rawtypes")
 	@PutMapping("review/{id}")
 	public ResponseEntity reviewRequest(@PathVariable int id, @RequestBody Request request) {
-		var status = request.getTotal() <= 50 ? APPROVED : REVIEW;
-		request.setStatus(status);
-		return putRequest(id, request);
+		request.setStatus(request.getTotal() <= 50 ? APPROVED : REVIEW);
+		requestRepo.save(request);
+		return new ResponseEntity<>(HttpStatus.OK);
 	}
 	
  	
@@ -88,7 +88,8 @@ public class RequestsController {
 	@PutMapping("approve/{id}")
 	public ResponseEntity approveRequest(@PathVariable int id, @RequestBody Request request)  {
 		request.setStatus(APPROVED);
-		return putRequest(id, request);
+		requestRepo.save(request);
+		return new ResponseEntity<>(HttpStatus.OK);
 		
 	}
 	
@@ -96,7 +97,8 @@ public class RequestsController {
 	@PutMapping("reject/{id}")
 	public ResponseEntity rejectRequest(@PathVariable int id, @RequestBody Request request)  {
 		request.setStatus(REJECTED);
-		return putRequest(id, request);
+		requestRepo.save(request);
+		return new ResponseEntity<>(HttpStatus.OK);
 	}
 	
 	@SuppressWarnings("rawtypes")
