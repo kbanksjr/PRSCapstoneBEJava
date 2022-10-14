@@ -51,7 +51,7 @@ public class RequestlinesController {
 	
 	@PostMapping
 	public ResponseEntity<Requestline> postRequestline(@RequestBody Requestline requestline) throws Exception{
-		if(requestline.getId() !=0 || requestline == null) {
+		if(requestline.getId() !=0) {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 		var rline = requestlineRepo.save(requestline);
@@ -65,16 +65,15 @@ public class RequestlinesController {
 	@SuppressWarnings("rawtypes")
 	@PutMapping("{id}")
 	public ResponseEntity putRequestline(@PathVariable int id, @RequestBody Requestline requestline) throws Exception {
-		if(requestline.getId() == 0 || requestline == null) {
+		if(id != requestline.getId()) {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
-		var rlineOpt = requestlineRepo.findById(requestline.getId());
+		var rlineOpt = requestlineRepo.findById(id);
 		if(rlineOpt.isEmpty()) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
-		var rline = rlineOpt.get();
-		requestlineRepo.save(rline);
-		var respEntity = this.recalcRequestTotal(rline.getRequest().getId());
+		requestlineRepo.save(requestline);// changed rline to requestline
+		var respEntity = this.recalcRequestTotal(rlineOpt.get().getRequest().getId());
 		if(respEntity.getStatusCode() != HttpStatus.OK) {
 			throw new Exception("Recalculating the request total has failed!");
 		}
@@ -88,9 +87,8 @@ public class RequestlinesController {
 		if(rlineOpt.isEmpty()) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
-		var rline = rlineOpt.get();
-		requestlineRepo.delete(rline);
-		var respEntity = this.recalcRequestTotal(rline.getId());
+		requestlineRepo.delete(rlineOpt.get());
+		var respEntity = this.recalcRequestTotal(rlineOpt.get().getRequest().getId());
 		if(respEntity.getStatusCode() != HttpStatus.OK) {
 			throw new Exception("Relcalculating the request total has failed!");
 		}

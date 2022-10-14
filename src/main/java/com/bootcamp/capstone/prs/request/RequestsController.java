@@ -63,10 +63,10 @@ public class RequestsController {
 	@SuppressWarnings("rawtypes")
 	@PutMapping("{id}")
 	public ResponseEntity putRequest(@PathVariable int id, @RequestBody Request request) {
-		if(request.getId() == 0 || request == null) {
+		if(id != request.getId()) {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
-		var _request = requestRepo.findById(request.getId());
+		var _request = requestRepo.findById(id);
 		if(_request.isEmpty()) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
@@ -78,27 +78,48 @@ public class RequestsController {
 	@SuppressWarnings("rawtypes")
 	@PutMapping("review/{id}")
 	public ResponseEntity reviewRequest(@PathVariable int id, @RequestBody Request request) {
-		request.setStatus(request.getTotal() <= 50 ? APPROVED : REVIEW);
-		requestRepo.save(request);
-		return new ResponseEntity<>(HttpStatus.OK);
+		if(id != request.getId()) {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+		var _request = requestRepo.findById(id);
+		if(_request.isEmpty()) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+		var result = (_request.get().getTotal() <= 50) ? APPROVED : REVIEW;
+		_request.get().setStatus(result);
+		requestRepo.save(_request.get());
+		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 	
  	
 	@SuppressWarnings("rawtypes")
 	@PutMapping("approve/{id}")
 	public ResponseEntity approveRequest(@PathVariable int id, @RequestBody Request request)  {
-		request.setStatus(APPROVED);
-		requestRepo.save(request);
-		return new ResponseEntity<>(HttpStatus.OK);
-		
+		if(id != request.getId()) {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+		var _request = requestRepo.findById(id);
+		if(_request.isEmpty()) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+		_request.get().setStatus(APPROVED);
+		requestRepo.save(_request.get());
+		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 	
 	@SuppressWarnings("rawtypes")
 	@PutMapping("reject/{id}")
 	public ResponseEntity rejectRequest(@PathVariable int id, @RequestBody Request request)  {
-		request.setStatus(REJECTED);
-		requestRepo.save(request);
-		return new ResponseEntity<>(HttpStatus.OK);
+		if(id != request.getId()) {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+		var _request = requestRepo.findById(id);
+		if(_request.isEmpty()) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+		_request.get().setStatus(REJECTED);
+		requestRepo.save(_request.get());
+		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 	
 	@SuppressWarnings("rawtypes")

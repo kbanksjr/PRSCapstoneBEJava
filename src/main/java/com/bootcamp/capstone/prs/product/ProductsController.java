@@ -38,21 +38,19 @@ public class ProductsController {
 	}
 	
 	@SuppressWarnings("rawtypes")
-	@PutMapping("{id}")
+	@PutMapping("{productId}")
 	public ResponseEntity putProduct(@PathVariable int id, @RequestBody Product product) {
-		if(product == null || product.getId() == 0) {
-			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-		}
+		if(product.getId() == 0 || id != product.getId()) 
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);		
 		var prod = productRepo.findById(product.getId());
-		if(prod.isEmpty()) {
+		if(prod.isEmpty()) 
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-		}
 		productRepo.save(product);
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 	
 	@SuppressWarnings("rawtypes")
-	@DeleteMapping("{id}")
+	@DeleteMapping("{productId}")
 	public ResponseEntity deleteProduct(@PathVariable int id) {
 		var prod = productRepo.findById(id);
 		if(prod.isEmpty()) {
